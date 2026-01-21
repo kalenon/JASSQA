@@ -4,7 +4,6 @@ from transformers import EncodecModel, HubertModel, AutoFeatureExtractor, Whispe
 import logging
 from utils import encode_and_stack_layers
 import os
-os.environ['TRANSFORMERS_OFFLINE']='1'
 
 class BaseTokenizer:
     def __init__(self, model_path, device='cpu'):
@@ -46,8 +45,8 @@ class WhisperFeatureExtractor_largev3(BaseTokenizer):
     def _load_model(self):
         logging.info(f"Loading Whisper: openai/whisper-large-v3")
         self.embed_dim = 1280
-        self.model = WhisperModel.from_pretrained("openai/whisper-large-v3", cache_dir="/data/home/wangchaoyang/code/SQA/MOSA-Net-Cross-Domain-main/MOSA_Net+/", local_files_only=True).to(self.device)
-        self.processor = AutoFeatureExtractor.from_pretrained("openai/whisper-large-v3", cache_dir="/data/home/wangchaoyang/code/SQA/MOSA-Net-Cross-Domain-main/MOSA_Net+/", local_files_only=True)
+        self.model = WhisperModel.from_pretrained("openai/whisper-large-v3").to(self.device)
+        self.processor = AutoFeatureExtractor.from_pretrained("openai/whisper-large-v3")
 
         self.sampling_rate = self.processor.sampling_rate
         self.model.eval() 
@@ -74,8 +73,8 @@ class WhisperFeatureExtractor_medium(BaseTokenizer):
 
         logging.info(f"Loading Whisper: openai/whisper-medium")
         self.embed_dim = 1024
-        self.model = WhisperModel.from_pretrained("openai/whisper-medium", local_files_only=True).to(self.device)
-        self.processor = AutoFeatureExtractor.from_pretrained("openai/whisper-medium", local_files_only=True)
+        self.model = WhisperModel.from_pretrained("openai/whisper-medium").to(self.device)
+        self.processor = AutoFeatureExtractor.from_pretrained("openai/whisper-medium")
 
         self.sampling_rate = 16000
         self.model.eval()

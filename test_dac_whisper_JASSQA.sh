@@ -1,44 +1,42 @@
 #!/bin/bash
 
 # Specify the path to the model checkpoint (.pt) file to be tested
-# CHECKPOINT_PATH=/data/home/wangchaoyang/code/SQA/Tok-MetricNet_whistoken/results/dac_whisperlarge_Quality_NISQA_latentembed3fusionmeantime_bs1_1loss_128dim_step_scoreqmaskdualpathcross8_DNSptforNISQA_lowstep_dp04all/best_model_epoch3_step30000.pt
-# CHECKPOINT_PATH=/data/home/wangchaoyang/code/SQA/Tok-MetricNet_whistoken/results/dac_whispermed_Quality_NISQA_latentembed3fusionmeantime_bs1_1loss_128dim_step_scoreqmaskdualpathcross8_DNSforNISQA_lowstep_dp04all_exdata_10/model_epoch5_step41041.pt
-CHECKPOINT_PATH=/data1/wangchaoyang/code/JASSQA/ckpt/best_model_epoch3_step30000.pt
+CHECKPOINT_PATH=./ckpt/JASSQA_large_NISQA/best_model_epoch3_step30000.pt
+# CHECKPOINT_PATH=./ckpt/JASSQA_large_VMC2023/model_epoch3_step24128.pt
+# CHECKPOINT_PATH=./ckpt/JASSQA_medium_NISQA/model_epoch5_step41041.pt
+# CHECKPOINT_PATH=./ckpt/JASSQA_medium_VMC2023/best_model_epoch3_step19968.pt
 
 # Specify the type of feature extractor to be used when training this model.
 AC_TOKENIZER_TYPE="dac"
-SE_EXTRACTOR_TYPE="whisper_largev3"
+SE_EXTRACTOR_TYPE="whisper_largev3" # optional "whisper_medium" or "whisper_largev3"
 
 # Specify the path or name of the test dataset.
 #    - If it's a local CSV file, use its full path, e.g., "/path/to/your/test.csv"
 
-# TEST_DATASET=("/data/home/wangchaoyang/database/NISQA_Corpus/NISQA_TEST_P501/NISQA_TEST_P501_file.csv")
-# TEST_WHISPER_ROOT_DIR=("/data/home/wangchaoyang/code/SQA/MOSA-Net-Cross-Domain-main/MOSA_Net+/MOSA-Net_Plus_Torch/Test_SSL_NISQA_P501_Feat_Whisperv3")
+# NISQA
+TEST_DATASET=("/path/to/database/NISQA_Corpus/NISQA_TEST_P501/NISQA_TEST_P501_file.csv")
 
-# TEST_DATASET=("/data/home/wangchaoyang/database/NISQA_Corpus/NISQA_TEST_LIVETALK/NISQA_TEST_LIVETALK_file.csv")
-# TEST_WHISPER_ROOT_DIR=("/data/home/wangchaoyang/code/SQA/MOSA-Net-Cross-Domain-main/MOSA_Net+/MOSA-Net_Plus_Torch/Test_SSL_NISQA_LIVETALK_Feat_Whisperv3")
+# TEST_DATASET=("/path/to/database/NISQA_Corpus/NISQA_TEST_LIVETALK/NISQA_TEST_LIVETALK_file.csv")
 
-TEST_DATASET=("/data/home/wangchaoyang/database/NISQA_Corpus/NISQA_TEST_FOR/NISQA_TEST_FOR_file.csv")
-# TEST_WHISPER_ROOT_DIR=("/data/home/wangchaoyang/code/SQA/MOSA-Net-Cross-Domain-main/MOSA_Net+/MOSA-Net_Plus_Torch/Test_SSL_NISQA_FOR_Feat_Whisperv3")
+# TEST_DATASET=("/path/to/database/NISQA_Corpus/NISQA_TEST_FOR/NISQA_TEST_FOR_file.csv")
 
-# TEST_DATASET=("/data/home/wangchaoyang/database/NISQA_Corpus/NISQA_VAL_SIM/NISQA_VAL_SIM_file.csv")
-# TEST_WHISPER_ROOT_DIR=("/data/home/wangchaoyang/code/SQA/MOSA-Net-Cross-Domain-main/MOSA_Net+/MOSA-Net_Plus_Torch/Val_SSL_NISQA_Feat_Whisperv3")
+# VMC23
+# TEST_DATASET=("/path/to/database/VoiceMOS_2023_track3/VMC2023_TEST.csv")
 
 # Tencent corpus
-# TEST_DATASET=("/data/home/wangchaoyang/database/TencentCorups/withoutReverberationTrainDevMOS.csv")
-# TEST_DATASET=(/data/home/wangchaoyang/code/SQA/MOSA-Net-Cross-Domain-main/MOSA_Net+/MOSA-Net_Plus_Torch/TENCENT_TXT/Test_TENCENT.csv)
-
-# TCP VoIP
-# TEST_DATASET=("/data/home/wangchaoyang/database/TCD_VOIP/tcdvoip/tcdvoip_ood_test.csv")
+# TEST_DATASET=("/path/to/database/TencentCorups/withoutReverberationTrainDevMOS.csv")
 
 # BVCC
-# TEST_DATASET=("/data/home/wangchaoyang/database/BVCC/main/DATA/sets/test_mos_list.csv")
+# TEST_DATASET=("/path/to/database/BVCC/main/DATA/sets/test_mos_list.csv")
+
+
 
 # Specify the root directory for the audio files.
-AUDIO_ROOT_DIR="/data/home/wangchaoyang/database/NISQA_Corpus"
-# AUDIO_ROOT_DIR="/data/home/wangchaoyang/database/TencentCorups"
-# AUDIO_ROOT_DIR="/data/home/wangchaoyang/database/TCD_VOIP/tcdvoip"
-# AUDIO_ROOT_DIR="/data/home/wangchaoyang/database/BVCC/main/DATA/wav"
+AUDIO_ROOT_DIR="/path/to/database/NISQA_Corpus"
+# AUDIO_ROOT_DIR="/path/to/database/TencentCorups"
+# AUDIO_ROOT_DIR="/path/to/database/TCD_VOIP/tcdvoip"
+# AUDIO_ROOT_DIR="/path/to/database/BVCC/main/DATA/wav"
+# AUDIO_ROOT_DIR="/path/to/database/VoiceMOS_2023_track3"
 
 TARGET_METRIC="quality"
 
