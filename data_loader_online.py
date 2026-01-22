@@ -2,7 +2,6 @@ import librosa
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
-from datasets import load_dataset
 import torchaudio
 import logging
 import pandas as pd
@@ -18,7 +17,20 @@ class CsvAudioDataset(Dataset):
 
         df_list = []
         for i in range(len(csv_path)):
-            df_one = pd.read_csv(csv_path[i], usecols=[self.audio_col, self.label_col])
+            path = csv_path[i]
+            columns_in_file = pd.read_csv(path, nrows=0).columns.tolist()
+
+            actual_usecols = [self.audio_col]
+            has_label = self.label_col in columns_in_file
+    
+            if has_label:
+                actual_usecols.append(self.label_col)
+
+            df_one = pd.read_csv(path, usecols=actual_usecols)
+
+            if not has_label:
+                df_one[self.label_col] = np.nan
+                
             df_list.append(df_one)
 
         self.df = pd.concat(df_list)
@@ -36,10 +48,8 @@ class CsvAudioDataset(Dataset):
         relative_path = item_row[self.audio_col]
         
         audio_path = os.path.join(self.audio_root_dir, relative_path)
-        # print(audio_path)
         waveform_orig, original_sr = torchaudio.load(audio_path)
 
-        # 重采样
         if original_sr != self.target_sr:
             resampler_name = str(original_sr)+str(self.target_sr)
             if resampler_name not in self.resampler_cache:
@@ -48,11 +58,9 @@ class CsvAudioDataset(Dataset):
         else:
             waveform = waveform_orig
 
-        # 转换为单声道
         if waveform.ndim > 1:
             waveform = torch.mean(waveform, dim=0)
         
-        # 语义重采样
         if original_sr != self.target_sr_se:
             resampler_name = str(original_sr)+str(self.target_sr_se)
             if resampler_name not in self.resampler_cache:
@@ -61,7 +69,6 @@ class CsvAudioDataset(Dataset):
         else:
             waveform_se = waveform_orig
 
-        # 转换为单声道
         if waveform_se.ndim > 1:
             waveform_se = torch.mean(waveform_se, dim=0)
 
@@ -70,11 +77,11 @@ class CsvAudioDataset(Dataset):
         lps = lps.permute(1, 0, 2).contiguous()
         wav = torch.from_numpy(wav)
 
-        # 获取标签
         labels = {}
         if self.label_col in item_row and pd.notna(item_row[self.label_col]):
-            # 假设CSV中的标签列对应质量
             labels['quality'] = torch.tensor(item_row[self.label_col], dtype=torch.float32)
+        else:
+            labels['quality'] = torch.tensor(float('nan'), dtype=torch.float32)
         
         return {"waveform": waveform, "waveform_se": waveform_se, "labels": labels, "sampling_rate": self.target_sr, "lps": lps, "wav": wav}
 
@@ -87,7 +94,6 @@ class MyCollator:
         waveforms = [item['waveform'] for item in batch]
         waveforms_se = [item['waveform_se'] for item in batch]
         labels = [item['labels'] for item in batch]
-        # ssl_input = [item['ssl_input'] for item in batch]
         wav = [item['wav'] for item in batch]
         lps = [item['lps'] for item in batch]
         

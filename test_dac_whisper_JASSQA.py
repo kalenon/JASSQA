@@ -1,11 +1,11 @@
 import argparse
+import numpy as np
 import torch
 import logging
 import os
 import pandas as pd
-from tqdm import tqdm
 
-from train_step_1loss_online import evaluate
+from evaluation import evaluate
 from utils import setup_logging, plot_scatterplot
 from data_loader_online import get_dataloader, MyCollator
 from feature_extractor import DACTokenizer, WhisperFeatureExtractor_largev3, WhisperFeatureExtractor_medium
@@ -81,6 +81,7 @@ def main(args):
     if metrics:
         logging.info("Test complete.")
         logging.info(f"Test set Loss={loss}")
+        logging.info(f"Test set pred MOS: {np.mean(predictions)}")
         logging.info(f"Test set metrics: SRCC={metrics.get('SRCC', 'N/A'):.4f}, LCC={metrics.get('LCC', 'N/A'):.4f}, MSE={metrics.get('MSE', 'N/A'):.4f}")
     else:
         logging.info("Test complete (no labels).")
@@ -98,7 +99,7 @@ def main(args):
         results_df.to_csv(output_path_txt, index=False, header=False)
         logging.info(f"Predictions saved to: {output_path}")
 
-    if args.plot and labels:
+    if args.plot and not torch.isnan(torch.tensor(labels)).all():
         plot_path = os.path.join(save_dir, file_name+'.png')
         plot_scatterplot(predictions, labels, metrics, plot_path)
 

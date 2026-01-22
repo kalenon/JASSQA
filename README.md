@@ -6,7 +6,7 @@ JASSQA is a non-intrusive speech quality assessment (SQA) model featuring a dual
 
 ## 1. Repository Status
 
-This repository currently contains the **Testing (Inference) Module** of JASSQA. You can use the provided scripts to evaluate speech quality on various datasets.
+This repository currently contains the **Testing (Inference) Module** of JASSQA. You can use the provided scripts to evaluate speech quality on various datasets or your own speech samples.
 
 ---
 
@@ -21,15 +21,16 @@ Based on the provided `NISQA_TEST_P501_file.csv`, your input CSV should follow t
     * `filepath_deg`: The relative or absolute path to the degraded audio file (e.g., `.wav`).
 * **Optional Columns (for evaluation metrics)**:
     * `mos`: Ground truth Mean Opinion Score to calculate PCC, SRCC, and RMSE.
-    * `db`: Dataset name or identifier.
 
 ### Audio Requirements
 * **Format**: Standard `.wav` files.
 * **Preprocessing**: The model handles feature extraction using DAC and Whisper; ensure your audio files are accessible via the paths provided in the CSV.
 
+### Model Checkpoints
+* We provide total 4 checkpoints mentioned in our paper including both large version and medium version which can be found in the path `./ckpt`.
 ---
 
-## 3. Eval
+## 3. Inference
 
 ### Environment Setup
 Ensure you have the following dependencies installed:
