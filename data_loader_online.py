@@ -157,7 +157,7 @@ def get_dataloader(dataset_path_or_name, split, target_sr, target_sr_se, batch_s
     else:
         raise ValueError(f"Unsupported dataset name or invalid CSV path: {dataset_path_or_name}")
 
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn, num_workers=32)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn, num_workers=0)
     
     logging.info(f"DataLoader successfully created with a batch size of {batch_size}")
     return dataloader
